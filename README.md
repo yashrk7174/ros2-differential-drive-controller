@@ -12,16 +12,6 @@ This project implements a ROS2-based differential drive robot simulation using P
 ## System Flow
 cmd_publisher → robot_node → position update
 
-## How to Run
-
-```bash
-colcon build
-source install/setup.bash
-
-ros2 run diff_drive_robot cmd_publisher
-ros2 run diff_drive_robot robot_node
-The system consists of:
-
 ## Goal Publisher
 - Controller Node
 - Robot Simulation Node
@@ -40,3 +30,15 @@ PID controller
 RViz visualization
 URDF robot model
 TF2 transforms
+
+## How to Run
+
+```bash
+colcon build
+source install/setup.bash
+
+ros2 run diff_drive_robot cmd_publisher
+ros2 run diff_drive_robot robot_node
+The system consists of:
+
+
