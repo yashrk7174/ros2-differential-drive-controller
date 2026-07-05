@@ -20,3 +20,23 @@ source install/setup.bash
 
 ros2 run diff_drive_robot cmd_publisher
 ros2 run diff_drive_robot robot_node
+The system consists of:
+
+## Goal Publisher
+- Controller Node
+- Robot Simulation Node
+
+The project demonstrates:
+
+- ROS2 Publisher/Subscriber
+- Robot Motion Control
+- Linux Development
+- ROS2 Topics
+- Robot Kinematics
+
+## Future Improvements
+Differential drive kinematics (x, y, theta)
+PID controller
+RViz visualization
+URDF robot model
+TF2 transforms
