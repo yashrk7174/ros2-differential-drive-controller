@@ -160,7 +160,7 @@ The launch system starts all required components:
 ---
 
 # Package Structure
-**ros2-differential-drive-controller/
+ros2-differential-drive-controller/
 
 ├── config/
 │ └── robot_view.rviz
@@ -183,7 +183,7 @@ The launch system starts all required components:
 ├── setup.py
 ├── setup.cfg
 ├── README.md
-└── .gitignore**
+└── .gitignore
 
 
 ---
@@ -205,14 +205,13 @@ The launch system starts all required components:
 
 ```bash
 cd ~/ros2_ws
-
 colcon build --symlink-install
-
 source install/setup.bash
 
-
-Launch Robot System: ros2 launch diff_drive_robot robot_view.launch.py
-Verification Commands:ros2 node list
+Launch Robot System:
+ros2 launch diff_drive_robot robot_view.launch.py
+Verification Commands:
+ros2 node list
 Expected:
 
 /cmd_publisher
@@ -264,7 +263,7 @@ Improve controller architecture
 
 
 
-**Author**
+Author
 Yash Khiste
 M.Sc. Electrical Engineering and Information Technology
 Focus Areas:
