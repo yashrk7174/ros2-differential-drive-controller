@@ -221,7 +221,53 @@ Future Development Roadmap
 -Improve controller architecture
 
 # How To Run
+# Project Demonstration
 
+## ROS2 Topics
+
+Shows the active ROS2 communication topics.
+
+![ROS2 Topics](screenshots/ros2_topic_list.png)
+
+---
+
+## Command Publisher
+
+Velocity commands are continuously published to `/cmd_vel`.
+
+![Command Publisher](screenshots/cmd_publisher_terminal.png)
+
+---
+
+## Robot Controller Node
+
+Robot controller subscribes to velocity commands and computes differential drive kinematics.
+
+![Robot Node](screenshots/robot_node_terminal.png)
+
+---
+
+## Robot Pose
+
+Robot pose updates while moving.
+
+![Robot Pose](screenshots/robot_pose_output.png)
+
+---
+
+## Odometry
+
+Published odometry information (`/odom`).
+
+![Odometry](screenshots/odometry_topic.png)
+
+---
+
+## TF Tree
+
+Coordinate transformation between `odom` and `base_link`.
+
+![TF Tree](screenshots/tf_tree.png)
 ## Build Workspace
 
 ```bash
