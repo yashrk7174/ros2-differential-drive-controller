@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+
+build/
+install/
+log/
+
+*.gv
+*.pdf
+
+.vscode/
+.idea/
