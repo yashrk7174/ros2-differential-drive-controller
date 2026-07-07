@@ -229,14 +229,14 @@ Future Development Roadmap
 
 Shows the 3D robot model loaded from URDF using `robot_state_publisher`.
 
-![RViz Robot Model](screenshots/rviz_robot.png)
+![RViz Robot Model](screenshots/rviz robot.png)
 
 
 ## RViz TF and Odometry
 
 Shows the robot model with odometry visualization and TF transformation.
 
-![RViz Odometry](screenshots/rviz_odometry.png)
+![RViz Odometry](screenshots/rviz odometry.png)
 ## ROS2 Topics
 
 Shows the active ROS2 communication topics.
