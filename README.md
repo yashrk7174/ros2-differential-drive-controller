@@ -235,7 +235,7 @@ Shows the active ROS2 communication topics.
 
 Velocity commands are continuously published to `/cmd_vel`.
 
-![Command Publisher](screenshots/cmd_publisher_terminal.png)
+![Command Publisher](screenshots/cmd_publisher_terminal.jpg)
 
 ---
 
