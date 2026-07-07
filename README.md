@@ -223,6 +223,16 @@ Future Development Roadmap
 # How To Run
 # Project Demonstration
 
+## RViz Results
+
+Shows the 3D Robot in RViz2.
+
+![RViz Results](screenshots/rviz robot.png)
+
+Shows the Odemetry with 3D robot model.
+
+![RViz Results](screenshots/rviz odometry.png)
+
 ## ROS2 Topics
 
 Shows the active ROS2 communication topics.
