@@ -210,15 +210,15 @@ Future Development Roadmap
 
 ## Planned improvements:
 
-Add wheel links and joints
-Add joint_state_publisher
-Improve robot URDF model
-Add realistic wheel rotation
-Implement PID controller
-Add Gazebo simulation
-Integrate Nav2 autonomous navigation
-Add automated testing
-Improve controller architecture
+-Add wheel links and joints
+-Add joint_state_publisher
+-Improve robot URDF model
+-Add realistic wheel rotation
+-Implement PID controller
+-Add Gazebo simulation
+-Integrate Nav2 autonomous navigation
+-Add automated testing
+-Improve controller architecture
 
 # How To Run
 
