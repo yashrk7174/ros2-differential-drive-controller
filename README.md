@@ -223,16 +223,20 @@ Future Development Roadmap
 # How To Run
 # Project Demonstration
 
-## RViz Results
+# RViz Visualization
 
-Shows the 3D Robot in RViz2.
+## RViz Robot Model
 
-![RViz Results](screenshots/rviz robot.png)
+Shows the 3D robot model loaded from URDF using `robot_state_publisher`.
 
-Shows the Odemetry with 3D robot model.
+![RViz Robot Model](screenshots/rviz_robot.png)
 
-![RViz Results](screenshots/rviz odometry.png)
 
+## RViz TF and Odometry
+
+Shows the robot model with odometry visualization and TF transformation.
+
+![RViz Odometry](screenshots/rviz_odometry.png)
 ## ROS2 Topics
 
 Shows the active ROS2 communication topics.
