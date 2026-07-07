@@ -198,48 +198,7 @@ ros2-differential-drive-controller/
 | `/robot_description` | std_msgs/msg/String | URDF robot model |
 
 ---
-
-# How To Run
-
-## Build Workspace
-
-```bash
-cd ~/ros2_ws
-colcon build --symlink-install
-source install/setup.bash
-
-Launch Robot System:
-ros2 launch diff_drive_robot robot_view.launch.py
-Verification Commands:
-ros2 node list
-Expected:
-
-/cmd_publisher
-/robot_node
-/robot_state_publisher
-/rviz
-
-Check ROS2 Topics
-ros2 topic list
-Check Odometry
-ros2 topic echo /odom
-Check TF Tree
-ros2 run tf2_tools view_frames
-Screenshots
-
-Project screenshots are available in:
-
-screenshots/
-
-Included demonstrations:
-
-ROS2 nodes and topics: 
-TF tree visualization
-Odometry output
-RViz visualization
-
-
-Technologies Used
+# Technologies Used
 ROS2 Humble
 Python
 URDF
@@ -249,7 +208,7 @@ Linux Ubuntu 22.04
 WSL2
 Future Development Roadmap
 
-##Planned improvements:
+## Planned improvements:
 
 Add wheel links and joints
 Add joint_state_publisher
@@ -261,6 +220,33 @@ Integrate Nav2 autonomous navigation
 Add automated testing
 Improve controller architecture
 
+# How To Run
+
+## Build Workspace
+
+```bash
+cd ~/ros2_ws
+colcon build --symlink-install
+source install/setup.bash
+
+Launch Robot System: ros2 launch diff_drive_robot robot_view.launch.py
+Verification Commands: ros2 node list
+
+Expected:
+/cmd_publisher
+/robot_node
+/robot_state_publisher
+/rviz
+
+Check ROS2 Topics : ros2 topic list
+Check Odometry: ros2 topic echo /odom
+Check TF Tree: ros2 run tf2_tools view_frames
+
+
+
+
+
+
 
 
 Author
@@ -271,4 +257,3 @@ Robotics
 Control Systems
 Industrial Automation
 ROS2 Development
-
