@@ -1,34 +1,40 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32
+from geometry_msgs.msg import Twist
 
 
-class VelocityPublisher(Node):
+class CmdPublisher(Node):
 
     def __init__(self):
-        super().__init__('velocity_publisher')
+        super().__init__('cmd_publisher')
 
-        self.publisher = self.create_publisher(
-            Float32,
-            '/cmd_vel',
-            10
-        )
+        self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
 
-        self.timer = self.create_timer(1.0, self.publish_velocity)
+        self.timer = self.create_timer(0.1, self.publish_velocity)
+
+        self.get_logger().info("Command Publisher Started")
 
     def publish_velocity(self):
-        msg = Float32()
-        msg.data = 1.0
 
-        self.publisher.publish(msg)
+        msg = Twist()
 
-        self.get_logger().info("Publishing velocity = 1.0")
+        msg.linear.x = 0.5
+        msg.angular.z = 0.2
+
+        self.publisher_.publish(msg)
+
+        self.get_logger().info(
+            f"Linear={msg.linear.x:.2f}, Angular={msg.angular.z:.2f}"
+        )
 
 
-def main():
-    rclpy.init()
-    node = VelocityPublisher()
+def main(args=None):
+    rclpy.init(args=args)
+
+    node = CmdPublisher()
+
     rclpy.spin(node)
+
     node.destroy_node()
     rclpy.shutdown()
 

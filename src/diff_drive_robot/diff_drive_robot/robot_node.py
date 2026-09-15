@@ -1,51 +1,139 @@
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float32
+
+from geometry_msgs.msg import Twist
+from nav_msgs.msg import Odometry
+
+from tf2_ros import TransformBroadcaster
+from geometry_msgs.msg import TransformStamped
+
+import math
 
 
-class DifferentialDriveRobot(Node):
+class RobotNode(Node):
 
     def __init__(self):
-        super().__init__('diff_drive_robot')
+        super().__init__('robot_node')
 
+        # -----------------------
+        # Robot state
+        # -----------------------
         self.x = 0.0
-        self.linear_velocity = 0.0
+        self.y = 0.0
+        self.theta = 0.0
 
+        self.v = 0.0
+        self.omega = 0.0
+
+        self.dt = 0.1
+
+        # -----------------------
+        # Subscriber
+        # -----------------------
         self.subscription = self.create_subscription(
-            Float32,
+            Twist,
             '/cmd_vel',
             self.cmd_callback,
             10
         )
 
-        self.publisher = self.create_publisher(
-            Float32,
-            '/robot_position',
+        # -----------------------
+        # Publisher (Odometry)
+        # -----------------------
+        self.odom_pub = self.create_publisher(
+            Odometry,
+            '/odom',
             10
         )
 
-        self.timer = self.create_timer(0.1, self.update_robot)
+        # -----------------------
+        # TF Broadcaster
+        # -----------------------
+        self.tf_broadcaster = TransformBroadcaster(self)
 
-        self.get_logger().info("Robot Node Started")
+        # -----------------------
+        # Timer loop
+        # -----------------------
+        self.timer = self.create_timer(self.dt, self.update_robot)
 
+        self.get_logger().info("Robot Node Started with TF + Odometry")
+
+    # -----------------------
+    # Receive velocity
+    # -----------------------
     def cmd_callback(self, msg):
-        self.linear_velocity = msg.data
+        self.v = msg.linear.x
+        self.omega = msg.angular.z
 
+    # -----------------------
+    # Main update loop
+    # -----------------------
     def update_robot(self):
-        dt = 0.1
-        self.x += self.linear_velocity * dt
 
-        msg = Float32()
-        msg.data = self.x
+        # -----------------------
+        # Kinematics (Differential Drive)
+        # -----------------------
+        self.x += self.v * math.cos(self.theta) * self.dt
+        self.y += self.v * math.sin(self.theta) * self.dt
+        self.theta += self.omega * self.dt
 
-        self.publisher.publish(msg)
+        self.theta = math.atan2(
+            math.sin(self.theta),
+            math.cos(self.theta)
+        )
 
-        self.get_logger().info(f"X position: {self.x:.2f}")
+        # ======================================================
+        # 1. PUBLISH ODOMETRY
+        # ======================================================
+        odom = Odometry()
+
+        odom.header.stamp = self.get_clock().now().to_msg()
+        odom.header.frame_id = "odom"
+        odom.child_frame_id = "base_link"
+
+        odom.pose.pose.position.x = self.x
+        odom.pose.pose.position.y = self.y
+        odom.pose.pose.position.z = 0.0
+
+        odom.pose.pose.orientation.z = math.sin(self.theta / 2.0)
+        odom.pose.pose.orientation.w = math.cos(self.theta / 2.0)
+
+        odom.twist.twist.linear.x = self.v
+        odom.twist.twist.angular.z = self.omega
+
+        self.odom_pub.publish(odom)
+
+        # ======================================================
+        # 2. PUBLISH TF
+        # ======================================================
+        t = TransformStamped()
+
+        t.header.stamp = self.get_clock().now().to_msg()
+        t.header.frame_id = "odom"
+        t.child_frame_id = "base_link"
+
+        # translation
+        t.transform.translation.x = self.x
+        t.transform.translation.y = self.y
+        t.transform.translation.z = 0.0
+
+        # rotation 
+        t.transform.rotation.z = math.sin(self.theta / 2.0)
+        t.transform.rotation.w = math.cos(self.theta / 2.0)
+
+        self.tf_broadcaster.sendTransform(t)
+
+        # -----------------------
+        # Debug
+        # -----------------------
+        self.get_logger().info(
+            f"TF+ODOM → x={self.x:.2f}, y={self.y:.2f}, θ={self.theta:.2f}"
+        )
 
 
-def main():
-    rclpy.init()
-    node = DifferentialDriveRobot()
+def main(args=None):
+    rclpy.init(args=args)
+    node = RobotNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

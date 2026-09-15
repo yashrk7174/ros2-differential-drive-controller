@@ -1,22 +1,63 @@
 from setuptools import setup
+import os
+from glob import glob
 
 package_name = 'diff_drive_robot'
 
 setup(
     name=package_name,
     version='0.0.0',
+
     packages=[package_name],
+
     data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
+        # Register package
+        (
+            'share/ament_index/resource_index/packages',
+            ['resource/' + package_name]
+        ),
+
+        # Install package.xml
+        (
+            'share/' + package_name,
+            ['package.xml']
+        ),
+
+        # Install launch files
+        (
+            os.path.join('share', package_name, 'launch'),
+            glob('launch/*.py')
+        ),
+        # Install URDF and Xacro files
+        (
+            os.path.join('share', package_name, 'urdf'),
+            glob('urdf/*')
+        ),
+
+        # Install RViz configuration
+        (
+            os.path.join('share', package_name, 'config'),
+            glob('config/*.rviz')
+        ),
     ],
-    install_requires=['setuptools'],
+
+    install_requires=[
+        'setuptools',
+    ],
+
     zip_safe=True,
-    maintainer='user',
-    maintainer_email='user@todo.todo',
-    description='ROS2 differential drive robot',
-    license='Apache License 2.0',
+
+    maintainer='khisteyash',
+    maintainer_email='khiste.workspace@gmail.com',
+
+    description='ROS2 differential drive robot controller with URDF, TF2, Odometry and RViz',
+
+    license='Apache-2.0',
+
+    tests_require=[
+        'pytest',
+    ],
+
     entry_points={
         'console_scripts': [
             'robot_node = diff_drive_robot.robot_node:main',
