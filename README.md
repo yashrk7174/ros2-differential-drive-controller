@@ -2,35 +2,35 @@
 
 A ROS2 Humble mobile-robot control project implementing differential-drive kinematics, odometry, TF2, modular URDF/Xacro modeling, joint-state publishing, and RViz2 visualization in Python.
 
-The project is developed as a practical robotics engineering portfolio, progressing from robot modeling and motion control toward simulation, localization, and autonomous navigation.
+The project demonstrates the development of a mobile-robot software stack from low-level velocity commands and kinematic modeling to robot state estimation, coordinate-frame management, and visualization.
 
-![ROS2 Differential Drive Robot](screenshots/Screen%20shot%201.jpg)
+![Differential Drive Robot](screenshots/wheel%20car.png)
 
 ---
 
 ## Engineering Highlights
 
-* **Built a differential-drive motion controller** using ROS2 `rclpy` and planar kinematics, converting `/cmd_vel` velocity commands into simulated robot pose updates.
+* **Built a differential-drive motion controller** using ROS2 `rclpy` and planar robot kinematics, converting velocity commands into simulated robot motion.
 
-* **Implemented robot odometry estimation** by integrating linear and angular velocity over time, publishing `nav_msgs/msg/Odometry` through `/odom`.
+* **Implemented a ROS2 velocity-command interface** using `geometry_msgs/msg/Twist` on `/cmd_vel`, providing a standard mobile-robot motion input.
 
-* **Implemented dynamic TF2 broadcasting** using `odom → base_link`, providing the robot's runtime coordinate transformation for visualization and downstream robotics components.
+* **Implemented robot odometry estimation** by integrating linear and angular velocity over time, publishing robot state through `nav_msgs/msg/Odometry`.
 
-* **Developed a modular robot description** using URDF/Xacro, separating the chassis, wheels, and materials into reusable robot-description components.
+* **Implemented dynamic TF2 broadcasting** from `odom` to `base_link`, providing the robot's runtime coordinate transformation.
 
-* **Added drive-wheel and caster geometry** using dedicated links and joints, creating a complete differential-drive mobile robot model.
+* **Developed a modular robot description** using URDF/Xacro, separating the robot chassis, wheels, and materials into reusable components.
 
-* **Added collision and inertial properties** to the robot description, providing physically meaningful geometry and mass properties for future physics-based simulation.
+* **Added wheel and caster links and joints** to the robot model, creating a complete differential-drive mobile robot structure.
 
-* **Integrated `joint_state_publisher` and `robot_state_publisher`** to generate the robot's link and joint transformation hierarchy.
+* **Added collision and inertial properties** to the robot description, establishing a simulation-ready physical model for future development.
 
-* **Built a ROS2 launch workflow** that dynamically processes the Xacro model and starts the controller, command publisher, state publishers, and RViz2 visualization.
+* **Integrated `joint_state_publisher` and `robot_state_publisher`** to propagate joint and link transformations through the robot's TF hierarchy.
 
-* **Validated the robot description** using Xacro generation and `check_urdf`, confirming successful XML parsing and a valid link/joint structure.
+* **Built a ROS2 launch workflow** that processes the Xacro robot description and starts the required controller, state publishers, command publisher, and RViz2 components.
 
-* **Validated ROS2 runtime behavior** using node, topic, odometry-frequency, and TF inspection commands.
+* **Validated the robot model** using Xacro generation and `check_urdf`, confirming successful parsing and a valid link/joint structure.
 
-* **Structured the project as a standard ROS2 Python package** with package metadata, launch files, RViz configuration, robot description, resources, console entry points, and automated tests.
+* **Validated ROS2 runtime behavior** using node, topic, odometry, robot-pose, and TF inspection tools.
 
 ---
 
@@ -79,9 +79,9 @@ The project is developed as a practical robotics engineering portfolio, progress
 
 **Implemented:** Differential-drive robot motion control.
 
-**How:** ROS2 `rclpy` receives `geometry_msgs/msg/Twist` commands from `/cmd_vel` and applies planar differential-drive motion equations.
+**How:** `robot_node` receives velocity information through ROS2 and applies planar differential-drive kinematics to update the robot state.
 
-The robot state is represented by:
+The robot pose is represented by:
 
 ```text
 x
@@ -89,7 +89,7 @@ y
 θ
 ```
 
-with:
+with the planar motion model:
 
 ```text
 ẋ = v cos(θ)
@@ -99,29 +99,51 @@ ẏ = v sin(θ)
 θ̇ = ω
 ```
 
-**Result:** Linear and angular velocity commands produce continuously updated robot motion and orientation.
+**Result:** Linear and angular velocity commands generate continuously updated robot position and orientation.
 
 ---
 
-## 2. ROS2 Command Interface
+## 2. ROS2 Velocity Interface
 
 **Implemented:** A dedicated velocity-command publisher.
 
-**How:** `cmd_publisher` publishes `geometry_msgs/msg/Twist` messages to:
+**How:** `cmd_publisher` publishes:
+
+```text
+geometry_msgs/msg/Twist
+```
+
+to:
 
 ```text
 /cmd_vel
 ```
 
-**Result:** Robot motion is controlled through a standard ROS2 velocity-command interface.
+**Result:** The robot controller receives velocity commands through a standard ROS2 mobile-robot interface.
+
+![CMD Publisher](screenshots/cmd_publisher_terminal.png)
 
 ---
 
-## 3. Odometry
+## 3. Robot Controller Node
+
+**Implemented:** A dedicated ROS2 robot-control node.
+
+**How:** `robot_node` subscribes to the robot's velocity command interface, performs motion calculations, updates the robot state, and publishes odometry and TF information.
+
+**Result:** Robot motion, pose integration, odometry, and TF broadcasting are handled within the controller node.
+
+![Robot Node Terminal](screenshots/robot_node_terminal.png)
+
+---
+
+## 4. Odometry Estimation
 
 **Implemented:** Runtime robot odometry.
 
-**How:** The controller integrates linear and angular motion over time and publishes:
+**How:** Linear and angular velocities are integrated over time to estimate the robot's position and orientation.
+
+The resulting state is published through:
 
 ```text
 /odom
@@ -133,21 +155,29 @@ using:
 nav_msgs/msg/Odometry
 ```
 
-**Result:** The system provides continuously updated robot position, orientation, linear velocity, and angular velocity.
+**Result:** The ROS2 system continuously exposes the estimated robot pose and velocity.
 
-The odometry publisher has been validated at approximately:
-
-```text
-10 Hz
-```
+![Odometry Topic](screenshots/odometry_topic.png)
 
 ---
 
-## 4. TF2 Coordinate Frames
+## 5. Robot Pose Integration
+
+**Implemented:** Continuous robot pose calculation.
+
+**How:** The controller integrates the robot's linear and angular motion over the control loop.
+
+**Result:** The estimated position and orientation change according to the commanded robot motion.
+
+![Robot Pose Output](screenshots/robot_pose_output.png)
+
+---
+
+## 6. TF2 Coordinate Frames
 
 **Implemented:** Dynamic robot coordinate transformation.
 
-**How:** `robot_node` broadcasts:
+**How:** The controller broadcasts:
 
 ```text
 odom → base_link
@@ -155,15 +185,17 @@ odom → base_link
 
 through TF2.
 
-**Result:** The robot's dynamic pose becomes available through the ROS2 coordinate-frame system and can be consumed by visualization and future localization/navigation components.
+**Result:** The robot's dynamic pose is available through the ROS2 coordinate-frame system and can be visualized using RViz2 and inspected through TF2 tools.
+
+![TF Tree](screenshots/tf_tree.png)
 
 ---
 
-## 5. Modular URDF/Xacro Robot Model
+## 7. Modular URDF/Xacro Robot Model
 
 **Implemented:** A modular robot-description architecture.
 
-**How:** The original robot description was separated into reusable Xacro components:
+**How:** The robot model is separated into reusable Xacro components:
 
 ```text
 urdf/
@@ -173,27 +205,29 @@ urdf/
 └── materials.xacro
 ```
 
-**Result:** Chassis, wheel, and material definitions can be modified independently, making the robot model easier to extend.
+**Result:** Robot geometry, wheel definitions, materials, and physical properties can be modified independently.
+
+![Xacro Robot Description](screenshots/Xro%20file%20robot.png)
 
 ---
 
-## 6. Robot Geometry and Physical Properties
+## 8. Robot Geometry and Physical Properties
 
-**Implemented:** Chassis, drive wheels, and caster-wheel modeling.
+**Implemented:** Chassis, drive-wheel, and caster-wheel modeling.
 
 **How:** Xacro definitions provide visual geometry, collision geometry, mass, inertial properties, and joints.
 
-**Result:** The robot model contains both visualization-ready and collision-ready geometry, establishing a foundation for future physics simulation.
+**Result:** The robot description provides a structured model suitable for visualization and future physics-based simulation.
 
 ---
 
-## 7. Robot State Publishing
+## 9. Robot State Publishing
 
 **Implemented:** Joint-state and robot-state publishing.
 
-**How:** `joint_state_publisher` provides joint-state information while `robot_state_publisher` converts the robot's link/joint structure into TF2 transformations.
+**How:** `joint_state_publisher` provides joint-state information while `robot_state_publisher` generates link transformations from the robot description.
 
-**Result:** The robot model is represented through a connected link hierarchy:
+**Result:** The robot model is represented as a connected link hierarchy:
 
 ```text
 base_link
@@ -204,19 +238,13 @@ base_link
 
 ---
 
-## 8. Xacro-Based Launch System
+## 10. ROS2 Launch System
 
 **Implemented:** Automated robot startup and visualization.
 
-**How:** `robot_view.launch.py` dynamically processes:
+**How:** `robot_view.launch.py` dynamically processes the Xacro robot description and starts the required ROS2 nodes.
 
-```text
-robot.urdf.xacro
-```
-
-and passes the generated robot description to the ROS2 state-publishing system.
-
-**Result:** The complete robot visualization stack can be started with one command:
+**Result:** The complete robot visualization stack can be launched using:
 
 ```bash
 ros2 launch diff_drive_robot robot_view.launch.py
@@ -226,49 +254,79 @@ ros2 launch diff_drive_robot robot_view.launch.py
 
 # Results & Engineering Evidence
 
-## RViz2 Robot Model
+## Final Robot Visualization
 
-![RViz2 Robot Model](screenshots/Screen%20shot%201.jpg)
+![Differential Drive Robot](screenshots/wheel%20car.png)
 
-**Result:** Verified the modular Xacro robot description in RViz2 with the chassis, drive wheels, and caster wheel represented as connected robot links.
-
----
-
-## ROS2 Runtime Nodes
-
-![ROS2 Runtime Nodes](screenshots/list.jpg)
-
-**Result:** Verified the active ROS2 runtime architecture, including the controller, command publisher, robot-state publisher, joint-state publisher, and RViz2.
+**Result:** Verified the complete differential-drive robot model in the ROS2 visualization environment.
 
 ---
 
-## Velocity Command Interface
+## RViz2 Odometry
 
-![ROS2 Velocity Commands](screenshots/velocity.jpg)
+![RViz2 Odometry](screenshots/rviz_odometry.png)
 
-**Result:** Verified continuous `geometry_msgs/msg/Twist` command publication through `/cmd_vel`.
-
----
-
-## Robot Position and Motion
-
-![Robot Position and Odometry](screenshots/position.jpg)
-
-**Result:** Verified integrated robot motion and changing pose during runtime execution.
+**Result:** Verified the robot model and odometry-related visualization during runtime execution.
 
 ---
 
-## Runtime Data
+## ROS2 Topic Architecture
 
-![ROS2 Runtime Data](screenshots/graph.jpg)
+![ROS2 Topic List](screenshots/ros2_topic_list.png)
 
-**Result:** Captured runtime ROS2 data used to verify controller and robot-state behavior during development.
+**Result:** Verified the ROS2 topic interfaces used by the controller and robot-state system.
+
+---
+
+## Velocity Command Publisher
+
+![CMD Publisher Terminal](screenshots/cmd_publisher_terminal.png)
+
+**Result:** Verified velocity-command publication through `/cmd_vel`.
+
+---
+
+## Robot Controller Runtime
+
+![Robot Node Terminal](screenshots/robot_node_terminal.png)
+
+**Result:** Verified execution of the main robot-control node responsible for motion and state updates.
+
+---
+
+## Odometry Output
+
+![Odometry Topic](screenshots/odometry_topic.png)
+
+**Result:** Verified the `/odom` topic and published robot odometry data.
+
+---
+
+## Robot Pose
+
+![Robot Pose Output](screenshots/robot_pose_output.png)
+
+**Result:** Verified the calculated robot position and orientation during runtime motion.
+
+---
+
+## TF2 Frame Tree
+
+![TF2 Tree](screenshots/tf_tree.png)
+
+**Result:** Verified the robot coordinate-frame relationship between `odom`, `base_link`, and the robot's child links.
+
+---
+
+## Xacro Robot Description
+
+![Xacro Robot Description](screenshots/Xro%20file%20robot.png)
+
+**Result:** Verified the modular robot-description implementation used to generate the ROS2 robot model.
 
 ---
 
 # Validation
-
-The ROS2 package and robot description have been validated through static and runtime checks.
 
 ## Package Build
 
@@ -280,7 +338,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-Successful build result:
+Successful build:
 
 ```text
 Starting >>> diff_drive_robot
@@ -322,7 +380,7 @@ child links:
 
 ---
 
-## ROS2 Package Discovery
+## ROS2 Package Verification
 
 ```bash
 ros2 pkg prefix diff_drive_robot
@@ -397,6 +455,15 @@ ros2-differential-drive-controller/
 ├── README.md
 ├── .gitignore
 ├── screenshots/
+│   ├── cmd_publisher_terminal.png
+│   ├── odometry_topic.png
+│   ├── robot_node_terminal.png
+│   ├── robot_pose_output.png
+│   ├── ros2_topic_list.png
+│   ├── rviz_odometry.png
+│   ├── tf_tree.png
+│   ├── wheel car.png
+│   └── Xro file robot.png
 │
 └── src/
     └── diff_drive_robot/
@@ -557,7 +624,7 @@ Colcon
 
 # Engineering Focus
 
-This project is being developed toward an industrial mobile-robot software stack:
+The project is being developed toward an industrial mobile-robot software stack:
 
 ```text
 Robot Modeling
