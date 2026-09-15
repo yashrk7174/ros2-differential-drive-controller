@@ -4,7 +4,7 @@ A ROS2 Humble mobile-robot control project implementing differential-drive kinem
 
 The project demonstrates the development of a mobile-robot software stack from low-level velocity commands and kinematic modeling to robot state estimation, coordinate-frame management, and visualization.
 
-![Differential Drive Robot](screenshots/wheel%20car.png)
+![Differential Drive Robot](screenshots/wheel car.png)
 
 ---
 
@@ -280,7 +280,7 @@ ros2 launch diff_drive_robot robot_view.launch.py
 
 ## Velocity Command Publisher
 
-![CMD Publisher Terminal](screenshots/cmd_publisher_terminal.png)
+![CMD Publisher Terminal](screenshots/cmd_publisher_terminal.jpg)
 
 **Result:** Verified velocity-command publication through `/cmd_vel`.
 
