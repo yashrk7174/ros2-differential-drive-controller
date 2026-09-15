@@ -256,7 +256,7 @@ ros2 launch diff_drive_robot robot_view.launch.py
 
 ## Final Robot Visualization
 
-![Differential Drive Robot](screenshots/wheel%20car.png)
+![Differential Drive Robot](screenshots/wheel_car.png)
 
 **Result:** Verified the complete differential-drive robot model in the ROS2 visualization environment.
 
