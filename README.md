@@ -4,7 +4,7 @@ A ROS2 Humble mobile-robot control project implementing differential-drive kinem
 
 The project demonstrates the development of a mobile-robot software stack from low-level velocity commands and kinematic modeling to robot state estimation, coordinate-frame management, and visualization.
 
-![Differential Drive Robot](screenshots/wheel car.png)
+![Differential Drive Robot](screenshots/wheel_car.png)
 
 ---
 
@@ -121,7 +121,7 @@ to:
 
 **Result:** The robot controller receives velocity commands through a standard ROS2 mobile-robot interface.
 
-![CMD Publisher](screenshots/cmd_publisher_terminal.png)
+![CMD Publisher](screenshots/cmd_publisher_terminal.jpg)
 
 ---
 
